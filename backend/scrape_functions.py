@@ -51,7 +51,7 @@ def scrape_amazon(scraper, product_name) -> SiteReview:
     browser.get('https://www.amazon.com/s?k=' + product_name)
     parent_xpath = "//*[@id=\"search\"]/div[1]/div[1]/div/span[1]/div[1]"
     WebDriverWait(browser, 3)
-    scraper.wait(parent_xpath)
+    scraper.wait(By.XPATH, parent_xpath)
     
     # Get all the products from the search and click on the one that matches the most with the product name
     parent = browser.find_element(By.XPATH, parent_xpath)
@@ -66,7 +66,7 @@ def scrape_amazon(scraper, product_name) -> SiteReview:
     closest_element.click()
     
     rating_xpath = "//*[@id=\"reviewsMedley\"]/div/div[1]/span[1]/span/div[2]/div/div[2]/div/span/span"
-    scraper.wait(rating_xpath)
+    scraper.wait(By.XPATH, rating_xpath)
 
     # Find the rating for the product
     rating = browser.find_element(By.XPATH, rating_xpath)
@@ -77,9 +77,8 @@ def scrape_amazon(scraper, product_name) -> SiteReview:
     all_reviews_xpath = "//*[@id=\"cr-pagination-footer-0\"]/a"
     all_reviews_css_selector = "a[data-hook='see-all-reviews-link-foot']"
     
-    WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, all_reviews_css_selector))
-    )
+    scraper.wait(By.CSS_SELECTOR, all_reviews_css_selector)
+
     see_all_reviews = browser.find_element(By.CSS_SELECTOR, all_reviews_css_selector)
     see_all_reviews.click()
 
@@ -101,6 +100,7 @@ def scrape_amazon(scraper, product_name) -> SiteReview:
 def slice_colon(str):
     index = str.find(':')
     return str[:index]
+
 def scrape_toms_guide(scraper, product_name):
     browser = scraper.browser
 
@@ -108,7 +108,7 @@ def scrape_toms_guide(scraper, product_name):
     browser.get('https://www.tomsguide.com/search?searchTerm=' + product_name)
     list_xpath = "//*[@id=\"content\"]/section/div[2]"
     WebDriverWait(browser, 3)
-    scraper.wait(list_xpath)
+    scraper.wait(By.XPATH, list_xpath)
 
     # Get all the products from the search and click on the one that matches the most with the product name
     parent = browser.find_element(By.XPATH, list_xpath)
