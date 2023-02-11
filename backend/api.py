@@ -4,9 +4,20 @@ from typing import List
 from scraper import Scraper
 from scrape_functions import scrape_amazon, scrape_toms_guide, Review, StoreReview, ArticleReview
 import threading
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 threadLocal = threading.local()
 
