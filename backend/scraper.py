@@ -7,6 +7,13 @@ import time
 from decouple import config
 from selenium.webdriver.chrome.service import Service
 from fuzzywuzzy import fuzz
+from pydantic import BaseModel
+
+class Review(BaseModel):
+    #logo: str
+    title: str
+    link: str
+    rating: float
 
 class Scraper:
     def __init__(self):
