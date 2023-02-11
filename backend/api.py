@@ -28,4 +28,5 @@ class Product(BaseModel):
 @app.get('/')
 def get(product: Product):
     scraper = create_scraper()
-    return scrape_toms_guide(scraper, product.product_name)
+    return scrape_amazon(scraper, product.product_name)
+    #return scrape__guide(scraper, product.product_name)
