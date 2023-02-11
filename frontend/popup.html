@@ -8,28 +8,33 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="icon" href="assets/icon.png" />
+  <link rel="icon" href="assets/comb_logo.png" />
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
   <script src="popup.js" defer></script>
-  <title>Scrutinize</title>
+  <title>Comb</title>
 </head>
 
 <body>
-  <h1>Scrutinize</h1>
-  <div class="article-rating">
-    <h2>Article Rating:</h2><button type="button"><a class="fa fa-chevron-down"></a></button>
-    <div class="stars-outer">
-      <div class="stars-inner">
-
-      </div>
-    </div>
+  <div class="title-container">
+    <img class="logo" src="assets/comb_logo.png">
+    <h1>Comb</h1>
   </div>
 
-  <div class="consumer-rating">
-    <h2>Customer Rating:</h2><button type="button"><a class="fa fa-chevron-down"></a></button>
-    <div class="stars-outer">
-      <div class="stars-inner"></div>
+  <div class="rating-container">
+    <div class="article-rating">
+      <h2>Articles:</h2>
+      <div class="stars-outer">
+        <div id="1" class="stars-inner">
+        </div>
+      </div>
+    </div>
+
+    <div class="consumer-rating">
+      <h2>Customers:</h2>
+      <div class="stars-outer">
+        <div id="2" class="stars-inner"></div>
+      </div>
     </div>
   </div>
 
@@ -37,6 +42,18 @@
   </div>
 
   <div id="articles">
+  </div>
+
+  <div class="bottom-nav">
+    <a href="popup.html">
+      <i class="fa fa-fw fa-home"></i>
+    </a>
+    <a href="article.html">
+      <i class="fa-solid fa-newspaper"></i>
+    </a>
+    <a href="customer.html">
+      <i class="fa-solid fa-person"></i>
+    </a>
   </div>
 
 </body>

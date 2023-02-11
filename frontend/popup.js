@@ -1,3 +1,6 @@
+document.addEventListener('DOMContentLoaded', ready)
+
+
 function addVideos() {
     const videoCount = 3;
     for (let i = 0; i < videoCount; i++) {
@@ -6,7 +9,7 @@ function addVideos() {
         link.target = "_blank";
 
         const thumbnail = document.createElement("img");
-        thumbnail.src = "thumbnail.jpeg";
+        thumbnail.src = "assets/thumbnail.jpeg";
         thumbnail.classList.add("thumbnail");
 
         link.appendChild(thumbnail);
@@ -18,14 +21,21 @@ function addVideos() {
 }
 
 function getRatings() {
-    const testRatings = [2.7];
-    const starsTotal = 5;
-    const starsPercentage = testRatings[0] / starsTotal * 100;
-    const starsPercentageRounded = `${Math.round((starsPercentage / 10) * 10)}%`;
+    const testRatings = [1.5, 3.8];
 
-    document.querySelector(".stars-inner").style.width = starsPercentageRounded;
+    const starsTotal = 5;
+    let starsPercentage = (testRatings[0] / starsTotal) * 100;
+    let starsPercentageRounded = `${Math.round((starsPercentage / 10) * 10)}%`;
+
+    document.getElementById('1').style.width = starsPercentageRounded;
+
+    starsPercentage = (testRatings[1] / starsTotal) * 100;
+    starsPercentageRounded = `${Math.round((starsPercentage / 10) * 10)}%`;
+    document.getElementById('2').style.width = starsPercentageRounded;
 }
 
 
-getRatings();
-addVideos();
+function ready() {
+    getRatings();
+    addVideos();
+}
