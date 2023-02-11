@@ -43,10 +43,11 @@ class Item(BaseModel):
 class Product(BaseModel):
     product_name: str
 
-@app.get('/')
-def get(product: Product):
+@app.get('/ratings/')
+def get(product_name: str):
+    print(product_name)
     scraper = create_scraper()
-    amazon_review: StoreReview = scrape_amazon(scraper, product.product_name)
-    toms_guide_review: ArticleReview = scrape_toms_guide(scraper, product.product_name)
-    video_reviews: List[VideoReview] = scrape_youtube(scraper, product.product_name)
+    amazon_review: StoreReview = scrape_amazon(scraper, product_name)
+    toms_guide_review: ArticleReview = scrape_toms_guide(scraper, product_name)
+    video_reviews: List[VideoReview] = scrape_youtube(scraper, product_name)
     return CompleteResponse(videos=video_reviews, stores=[amazon_review], articles=[toms_guide_review])
