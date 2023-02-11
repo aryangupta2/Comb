@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
-from scraper import Scraper, Review, SiteReview, scrape_amazon
+from scraper import Scraper
+from scrape_functions import scrape_amazon, Review, SiteReview
 import threading
 
 
