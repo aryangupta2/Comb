@@ -121,3 +121,16 @@ def scrape_toms_guide(scraper, product_name):
             closest_element = element
             highest_ratio = ratio
     closest_element.click()
+
+    star_parent_class = "chunk"
+    print(browser.title)
+    scraper.wait(By.CLASS_NAME, star_parent_class)
+    print(browser.title)
+
+    star_parent = browser.find_element(By.CLASS_NAME, star_parent_class)
+    stars = star_parent.find_elements(By.CSS_SELECTOR, "*")
+    half_stars = star_parent.find_elements(By.CLASS_NAME, "half")
+    rating: float = len(stars)
+    if(len(half_stars)) > 0:
+        rating -= 0.5
+    print(rating)
