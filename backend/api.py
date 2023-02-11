@@ -14,5 +14,5 @@ class Item(BaseModel):
 
 @app.get('/')
 def get():
-    scraper.scrape()
-    return "Hello"
+    
+    return scraper.scrape()
