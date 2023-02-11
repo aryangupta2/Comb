@@ -1,0 +1,53 @@
+POSSIBLE STOREFRONT:
+Amazon *
+Search Query URL: https://www.amazon.com/s?k=
+
+Wayfair(?)
+Search Query URL: https://www.wayfair.com/keyword.php?keyword=
+
+eBay(?)
+Search Query URL: https://www.ebay.com/sch/i.html?&_nkw=
+
+AliExpress(?? not many brand names)
+Search Query URL: https://www.aliexpress.com/w/wholesale-[INSERT QUERY].html
+
+Target (not Canadian)
+Search Query URL: https://www.target.com/s?searchTerm=
+
+Best Buy
+Search Query URL: https://www.bestbuy.com/site/searchpage.jsp?st=
+
+Walmart
+Search Query URL: https://www.walmart.com/search?q=
+
+POSSIBLE ARTICLE DATABASES:
+TECH:
+Engadget (reviews are out of 100)
+Search Query URL: https://search.engadget.com/search;_ylt=?p=[INSERT QUERY]&fr2=sb-top&fr=engadget
+
+The Verge (reviews are out of 10)
+Search Query URL: https://www.theverge.com/search?q=
+
+Tom's Hardware
+Search Query URL: https://www.tomshardware.com/search?searchTerm=
+
+Digital Trends
+Search Query URL: https://www.digitaltrends.com/?s=
+
+Trusted Reviews
+Search Query URL: https://www.trustedreviews.com/?s=
+
+GENERAL:
+Slashgear (reviews are out of 10)
+Search Query URL: could not find
+
+Viewpoints
+Search Query URL: www.viewpoints.com/search?utf8=✓&q=
+
+PHOTOGRAPHY:
+DPReview (reviews are out of 100)
+Search Query URL: https://www.dpreview.com/search?query=
+
+FASHION:
+Temptalia (reviews have letter grade)
+Search Query URL: https://www.temptalia.com/?s=
