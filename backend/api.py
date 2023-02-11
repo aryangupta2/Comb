@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
 from scraper import Scraper
-from scrape_functions import scrape_amazon, Review, SiteReview
+from scrape_functions import scrape_amazon, scrape_toms_guide, Review, SiteReview
 import threading
 
 
@@ -28,4 +28,4 @@ class Product(BaseModel):
 @app.get('/')
 def get(product: Product):
     scraper = create_scraper()
-    return scrape_amazon(scraper, product.product_name)
+    return scrape_toms_guide(scraper, product.product_name)

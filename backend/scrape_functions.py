@@ -97,4 +97,27 @@ def scrape_amazon(scraper, product_name) -> SiteReview:
         review_1: Review = build_amazon_review(scraper, general_review_xpath)
         review_2: Review = build_amazon_review(scraper, "/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[5]/div[3]/div/div[2]/div/div/div[2]")
         return SiteReview(reviews=[review_1, review_2], rating=rating_float)
-    
+
+def slice_colon(str):
+    index = str.find(':')
+    return str[:index]
+def scrape_toms_guide(scraper, product_name):
+    browser = scraper.browser
+
+    # Search for the product
+    browser.get('https://www.tomsguide.com/search?searchTerm=' + product_name)
+    list_xpath = "//*[@id=\"content\"]/section/div[2]"
+    WebDriverWait(browser, 3)
+    scraper.wait(list_xpath)
+
+    # Get all the products from the search and click on the one that matches the most with the product name
+    parent = browser.find_element(By.XPATH, list_xpath)
+    elements = parent.find_elements(By.CLASS_NAME, "article-name")
+    closest_element = elements[0]
+    highest_ratio = fuzz.ratio(product_name, slice_colon(closest_element.text))
+    for element in elements:    
+        ratio = fuzz.ratio(product_name, slice_colon(element.text))
+        if ratio > highest_ratio:
+            closest_element = element
+            highest_ratio = ratio
+    closest_element.click()
