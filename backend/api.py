@@ -17,6 +17,19 @@ def create_scraper():
         setattr(threadLocal, 'scraper', scraper)
     return scraper
 
+class ArticleReview(BaseModel):
+    site: str
+
+class VideoReview(BaseModel):
+    title: str
+
+
+class CompleteResponse(BaseModel):
+    stores: List[SiteReview]
+    articles: List[ArticleReview] = None
+    videos: List[VideoReview] = None
+
+
 class Item(BaseModel):
     customer_avg: float
     customer_reviews: List[Review] = []
@@ -28,5 +41,6 @@ class Product(BaseModel):
 @app.get('/')
 def get(product: Product):
     scraper = create_scraper()
-    return scrape_amazon(scraper, product.product_name)
+    amazon_review: SiteReview = scrape_amazon(scraper, product.product_name)
+    return CompleteResponse(stores=[amazon_review])
     #return scrape__guide(scraper, product.product_name)

@@ -12,6 +12,7 @@ class Review(BaseModel):
     rating: float
 
 class SiteReview(BaseModel):
+    site: str
     reviews: List[Review]
     rating: float
    
@@ -45,6 +46,7 @@ def build_amazon_review(scraper, XPATH) -> Review:
     return Review(title=title_text, link=review_hyperlink, rating=rating_float)
 
 def scrape_amazon(scraper, product_name) -> SiteReview:
+    store = "amazon"
     browser = scraper.browser
 
     # Search for the product
@@ -91,11 +93,11 @@ def scrape_amazon(scraper, product_name) -> SiteReview:
     if len(browser.find_elements(By.XPATH, pos_review_xpath)) > 0:
         positive_review: Review = build_top_amazon_review(scraper, pos_review_xpath)
         critical_review: Review = build_top_amazon_review(scraper, "/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[1]/div/div/div[2]/div[1]")
-        return SiteReview(reviews=[positive_review, critical_review], rating=rating_float)
+        return SiteReview(reviews=[positive_review, critical_review], rating=rating_float, site=store)
     else:
         review_1: Review = build_amazon_review(scraper, general_review_xpath)
         review_2: Review = build_amazon_review(scraper, "/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[5]/div[3]/div/div[2]/div/div/div[2]")
-        return SiteReview(reviews=[review_1, review_2], rating=rating_float)
+        return SiteReview(reviews=[review_1, review_2], rating=rating_float, site=store)
 
 def slice_colon(str):
     index = str.find(':')
@@ -132,4 +134,4 @@ def scrape_toms_guide(scraper, product_name):
     if(len(half_stars)) > 0:
         rating -= 0.5
     
-    
+
