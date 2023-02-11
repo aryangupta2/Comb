@@ -22,6 +22,7 @@ class StoreReview(BaseModel):
 
 class ArticleReview(BaseModel):
     site: str
+    link: str
     rating: float
    
 
@@ -141,8 +142,10 @@ def scrape_toms_guide(scraper, product_name) -> ArticleReview:
     rating: float = len(stars)
     if(len(half_stars)) > 0:
         rating -= 0.5
+
+    article_hyperlink = browser.current_url
     
-    return ArticleReview(rating=rating, site='toms-guide')
+    return ArticleReview(rating=rating, link=article_hyperlink, site='toms-guide')
 
 def scrape_youtube(scraper, product_name):
     browser = scraper.browser
@@ -198,8 +201,4 @@ def scrape_youtube(scraper, product_name):
         video_reviews.append(VideoReview(link=video_link, thumbnail_url=img_src))
     
     return video_reviews
-
-
-
-    
 
