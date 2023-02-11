@@ -1,7 +1,9 @@
 body {
-  width: 200px;
+  width: 300px;
+  height: 300px;
   text-align: left;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  background-color: #d1c3bc;
 }
 
 body {
@@ -10,10 +12,58 @@ body {
   margin: 0 auto;
 }
 
+h1 {
+  text-align: center;
+}
+
+h2 {
+  margin: 0;
+  display: inline-block;
+}
+
 .fa {
-  font-size: 80px;
+  font-size: 50vh;
+  display: block;
+  text-align: right;
 }
 
 .checked {
   color: orange;
+}
+
+.thumbnail {
+  padding-top: 75px;
+  width: 90vw;
+  height: 100%;
+  border-radius: 25px;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+}
+
+.stars-outer {
+  position: relative;
+  display: inline-block;
+}
+
+.stars-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0;
+}
+
+.stars-outer::before {
+  content: "\f005 \f005 \f005 \f005 \f005";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  color: #ccc;
+}
+
+.stars-inner::before {
+  content: "\f005 \f005 \f005 \f005 \f005";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  color: #f8ce0b;
 }

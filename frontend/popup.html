@@ -10,30 +10,35 @@
 
   <link rel="icon" href="assets/icon.png" />
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+  <script src="popup.js" defer></script>
   <title>Scrutinize</title>
 </head>
 
 <body>
   <h1>Scrutinize</h1>
-  <span>Customer Rating:</span>
-  <span class="fa fa-star star"></span>
-  <span class="fa fa-star star"></span>
-  <span class="fa fa-star star"></span>
-  <span class="fa fa-star star"></span>
-  <span class="fa fa-star star"></span>
-  <div class="rating article-rating">
+  <div class="article-rating">
+    <h2>Article Rating:</h2><button type="button"><a class="fa fa-chevron-down"></a></button>
+    <div class="stars-outer">
+      <div class="stars-inner">
 
-  </div>
-  <div class="rating consumer-rating">
-
+      </div>
+    </div>
   </div>
 
-  <p>
+  <div class="consumer-rating">
+    <h2>Customer Rating:</h2><button type="button"><a class="fa fa-chevron-down"></a></button>
+    <div class="stars-outer">
+      <div class="stars-inner"></div>
+    </div>
+  </div>
 
-  </p>
+  <div id="videos">
+  </div>
 
-  <script src=" popup.js"></script>
+  <div id="articles">
+  </div>
+
 </body>
 
 </html>
