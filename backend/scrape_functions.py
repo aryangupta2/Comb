@@ -5,6 +5,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
+class VideoReview(BaseModel):
+    link: str
+    thumbnail_url: str
+
 class Review(BaseModel):
     #logo: str
     title: str
@@ -139,6 +143,63 @@ def scrape_toms_guide(scraper, product_name) -> ArticleReview:
         rating -= 0.5
     
     return ArticleReview(rating=rating, site='toms-guide')
+
+def scrape_youtube(scraper, product_name):
+    browser = scraper.browser
+    product_name += ' Review'
+    browser.get("https://www.youtube.com/results?search_query=" + product_name)
+
+    parent_xpath = "//*[@id=\"contents\"]"
+    WebDriverWait(browser, 1)
+    scraper.wait(By.XPATH, parent_xpath)
+    
+    # Get all the products from the search and click on the one that matches the most with the product name
+    parent = browser.find_element(By.XPATH, parent_xpath)
+    elements = parent.find_elements(By.TAG_NAME, "ytd-video-renderer")
+    browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    tuples = []
+
+    for element in elements:
+        browser.execute_script("arguments[0].scrollIntoView();", element)
+        title_wrap_element = element.find_element(By.ID, "video-title")
+        title_element = title_wrap_element.find_element(By.TAG_NAME, "yt-formatted-string")
+        title_text = title_element.text
+        if "review" not in title_text.lower():
+            continue
+        print(title_element)
+        ratio = fuzz.ratio(product_name, title_text)
+        tuples.append((ratio, element))
+
+    sorted_tuples = sorted(tuples, key=lambda tup: tup[0], reverse=True)
+        
+    sorted_tuples = sorted_tuples[:5]
+
+    video_reviews: List[VideoReview] = []
+
+    print(tuples)
+    print(sorted_tuples)
+    
+    for best_video_tuple in tuples:
+        video_element = best_video_tuple[1]
+
+        yt_img_element = video_element.find_element(By.TAG_NAME, 'yt-image')
+        img_element = yt_img_element.find_element(By.TAG_NAME, 'img')
+        img_src = img_element.get_attribute('src')
+
+        thumbnail_element = video_element.find_element(By.ID, 'thumbnail')
+        video_link = thumbnail_element.get_attribute('href')
+
+        print(video_link)
+        print(img_src)
+
+        if None == video_link or None == img_src:
+            continue
+
+        video_reviews.append(VideoReview(link=video_link, thumbnail_url=img_src))
+    
+    return video_reviews
+
+
 
     
 
