@@ -31,6 +31,9 @@ Search Query URL: https://www.theverge.com/search?q=
 Tom's Hardware
 Search Query URL: https://www.tomshardware.com/search?searchTerm=
 
+Toms' Guide
+https://www.tomsguide.com/search?searchTerm=
+
 Digital Trends
 Search Query URL: https://www.digitaltrends.com/?s=
 
