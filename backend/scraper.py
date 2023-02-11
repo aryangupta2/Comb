@@ -2,12 +2,14 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver import DesiredCapabilities
 import os
 import time
 from decouple import config
 from selenium.webdriver.chrome.service import Service
 from fuzzywuzzy import fuzz
 from pydantic import BaseModel
+from typing import List
 
 class Review(BaseModel):
     #logo: str
@@ -23,14 +25,21 @@ class Scraper:
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--no-sandbox")
-        self.browser = webdriver.Chrome(service=service, options=chrome_options)
+        chrome_options.add_argument('--blink-settings=imagesEnabled=false')
+        chrome_options.add_argument("start-maximized")
 
-    def wait(self):
-        WebDriverWait(self.browser, 0.3)
+        caps = DesiredCapabilities().CHROME
+        caps["pageLoadStrategy"] = "none"
+        self.browser = webdriver.Chrome(service=service, options=chrome_options, desired_capabilities=caps)
+
+    def wait(self, XPATH):
+        WebDriverWait(self.browser, 10).until(
+            EC.presence_of_element_located((By.XPATH, XPATH))
+        )
 
     def build_amazon_review(self, XPATH) -> Review:
         review = self.browser.find_element(By.XPATH, XPATH)
-
+        
         rating_element = review.find_element(By.XPATH, ".//div[1]/div[4]/i/span")
         rating_text = rating_element.get_attribute('textContent')
         rating_float = float(rating_text[:3])
@@ -42,45 +51,48 @@ class Scraper:
         review_hyperlink = read_more_element.get_attribute('href')
         return Review(title=title_text, link=review_hyperlink, rating=rating_float)
 
-    def scrape(self):
+    def scrape(self) -> List[Review]:
         browser = self.browser
 
         # Search for the product
         product_name = 'Apple iPhone 13 128GB - Blue - Unlocked'
         browser.get('https://www.amazon.com/s?k=' + product_name)
-        self.wait()
+        parent_xpath = "//*[@id=\"search\"]/div[1]/div[1]/div/span[1]/div[1]"
+        WebDriverWait(browser, 1)
+        self.wait(parent_xpath)
         
         # Get all the products from the search and click on the one that matches the most with the product name
-        parent = browser.find_element(By.XPATH, "//*[@id=\"search\"]/div[1]/div[1]/div/span[1]/div[1]")
+        parent = browser.find_element(By.XPATH, parent_xpath)
         elements = parent.find_elements(By.CLASS_NAME, "a-size-medium")
         closest_element = elements[0]
         highest_ratio = fuzz.ratio(product_name, closest_element.text)
-        for element in elements:
+        for element in elements:    
             ratio = fuzz.ratio(product_name, element.text)
             if ratio > highest_ratio:
                 closest_element = element
                 highest_ratio = ratio
-        print(closest_element.text)
         closest_element.click()
-        self.wait()
+        
+        rating_xpath = "//*[@id=\"reviewsMedley\"]/div/div[1]/span[1]/span/div[2]/div/div[2]/div/span/span"
+        self.wait(rating_xpath)
 
         # Find the rating for the product
-        print(browser.title)
-        rating = browser.find_element(By.XPATH, "//*[@id=\"reviewsMedley\"]/div/div[1]/span[1]/span/div[2]/div/div[2]/div/span/span")
-        self.wait()
+        rating = browser.find_element(By.XPATH, rating_xpath)
         rating_text = rating.text
 
         # Go the the customer review page
-        see_all_reviews = browser.find_element(By.XPATH, "//*[@id=\"cr-pagination-footer-0\"]/a")
-        self.wait()
+        all_reviews_xpath = "//*[@id=\"cr-pagination-footer-0\"]/a"
+        self.wait(all_reviews_xpath)
+        see_all_reviews = browser.find_element(By.XPATH, all_reviews_xpath)
         see_all_reviews.click()
-        self.wait()
 
-        # Select the top positive review
-        review: Review = self.build_amazon_review("/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[1]/div/div/div[1]/div[1]")
-        print(review)
-        # Select the top critical review
-        #critical_review = browser.find_element(By.XPATH,"//*[@id=\"viewpoint-RRMK4PYHPFNQF\"]/div[1]")
+        # Select the best positive and critical reviews
+        pos_review_xpath = "/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[1]/div/div/div[1]/div[1]"
+        self.wait(pos_review_xpath)
+        positive_review: Review = self.build_amazon_review(pos_review_xpath)
+        critical_review: Review = self.build_amazon_review("/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[1]/div/div/div[2]/div[1]")
+        
+        return [positive_review, critical_review]
 
 
 
