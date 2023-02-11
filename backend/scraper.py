@@ -17,6 +17,10 @@ class Review(BaseModel):
     link: str
     rating: float
 
+class SiteReview(BaseModel):
+    reviews: List[Review]
+    rating: float
+
 class Scraper:
     def __init__(self):
         service = Service(config("CHROMEDRIVER_PATH"))
@@ -51,11 +55,10 @@ class Scraper:
         review_hyperlink = read_more_element.get_attribute('href')
         return Review(title=title_text, link=review_hyperlink, rating=rating_float)
 
-    def scrape(self) -> List[Review]:
+    def scrape_amazon(self, product_name) -> SiteReview:
         browser = self.browser
 
         # Search for the product
-        product_name = 'Apple iPhone 13 128GB - Blue - Unlocked'
         browser.get('https://www.amazon.com/s?k=' + product_name)
         parent_xpath = "//*[@id=\"search\"]/div[1]/div[1]/div/span[1]/div[1]"
         WebDriverWait(browser, 1)
@@ -79,6 +82,7 @@ class Scraper:
         # Find the rating for the product
         rating = browser.find_element(By.XPATH, rating_xpath)
         rating_text = rating.text
+        rating_float = float(rating_text[:3])
 
         # Go the the customer review page
         all_reviews_xpath = "//*[@id=\"cr-pagination-footer-0\"]/a"
@@ -92,7 +96,8 @@ class Scraper:
         positive_review: Review = self.build_amazon_review(pos_review_xpath)
         critical_review: Review = self.build_amazon_review("/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[1]/div/div/div[2]/div[1]")
         
-        return [positive_review, critical_review]
+
+        return SiteReview(reviews=[positive_review, critical_review], rating=rating_float)
 
 
 

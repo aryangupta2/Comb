@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
-from scraper import Scraper, Review
+from scraper import Scraper, Review, SiteReview
 
 
 app = FastAPI()
@@ -15,4 +15,4 @@ class Item(BaseModel):
 @app.get('/')
 def get():
     
-    return scraper.scrape()
+    return scraper.scrape_amazon('Apple iPhone 13 Pro 128GB - Blue - Unlocked')
