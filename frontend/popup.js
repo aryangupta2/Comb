@@ -117,6 +117,7 @@ function enableLoading() {
     const loading = document.createElement('img');
     loading.src = 'assets/comb_logo.png';
     loading.setAttribute('id', 'loading');
+    loading.classList += 'animate-flicker'
     document.body.appendChild(loading)
 }
 
