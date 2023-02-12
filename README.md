@@ -14,7 +14,7 @@ To run the server locally, you need to follow these steps:
 
 5. Create a new venv in the Comb backend directory:
 
-`python3 -m venv [name]` (creates a new venv named 'env')
+`python3 -m venv [name]`
 
 6. Enter the new venv from your shell:
 
