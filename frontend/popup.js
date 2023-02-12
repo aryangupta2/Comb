@@ -130,6 +130,7 @@ function disableLoading() {
 async function main() {
     enableLoading()
     const data = await getData();
+    localStorage.setItem("data", JSON.stringify(data));
     disableLoading()
     displayRatings();
     displayVideos();
