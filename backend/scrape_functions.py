@@ -43,6 +43,16 @@ def find_reviews_sentiment(review):
     )
     return response.classifications[0].prediction
 
+def find_titles_informativeness(title):
+    co = cohere.Client('B9k2WYc1FhKhqhJQq4fNFUoVTeZ9pjZtVb6aDgOZ')
+    titles = [title]
+    response = co.classify(
+        model='large',
+        inputs=titles,
+        examples=clickbait_examples,
+    )
+    return response.classifications[0].prediction
+
 def build_top_amazon_review(scraper, XPATH) -> Review:
     review = scraper.browser.find_element(By.XPATH, XPATH)
     

@@ -1,5 +1,29 @@
 from cohere.classify import Example
 
+# hacked together dataset, may or may not work
+clickbait_examples=[
+  Example("iPhone 13 Review: Pros and Cons", "informative"),
+  Example("Should You Buy iPhone 13 in 2023?", "non-informative"),
+  Example("Samsung Galaxy S23 review", "informative"),
+  Example("The Samsung S23 Ultra is secretly INCREDIBLE", "non-informative"),
+  Example("Apple concerned with iPhone icons' alleged misuse", "informative"),
+  Example("Nothing Phone (1) Review - ACTUALLY Better than iPhone?", "non-informative"),
+  Example("Meth use now USA's top drug problem, survey finds", "informative"),
+  Example("I'm an iPhone Person And This Is Why I Actually Love The New Android Phone", "non-informative"),
+  Example("Welsh University announces intelligent robot conducting biology experiments", "informative"),
+  Example("Why Millennials Are Leaving Six-Figure Tech Jobs", "non-informative"),
+  Example("2008 YODEX Review: Varied competitions, Vast creations", "informative"),
+  Example("kid shoots dad after he takes PS5..", "non-informative"),
+  Example("Review Panel Hears Rival Plans for New Spaceflights", "informative"),
+  Example("23 LIFE HACKS FOR EMBARRASSING MOMENTS", "non-informative"),
+  Example("Review Panel Hears Rival Plans for New Spaceflights", "informative"),
+  Example("The FASTEST WORKERS in the World !", "non-informative"),
+  Example("Review Panel Hears Rival Plans for New Spaceflights", "informative"),
+  Example("10 Most Epic Ways People Have Quit Their Job", "non-informative"),
+  Example("California Approaches a Deal on Budget Cuts", "informative"),
+  Example("Should You Buy a PS4 in 2021", "non-informative"),
+]
+
 # Amazon examples + Cohere.AI docs
 sentiment_examples=[
   Example("This is the best novel I have read in 2 or 3 years.  It is everything that fiction should be -- beautifully written, engaging, well-plotted and structured.  It has several layers of meanings -- historical, family,  philosophical and more -- and blends them all skillfully and interestingly.  It makes the American grad student/writers' workshop 'my parents were  mean to me and then my professors were mean to me' trivia look  childish and silly by comparison, as they are. Anyone who says this is an  adolescent girl's coming of age story is trivializing it.  Ignore them.  Read this book if you love literature. I was particularly impressed with  this young author's grasp of the meaning and texture of the lost world of  French Algeria in the 1950's and '60's...particularly poignant when read in  1999 from another ruined and abandoned French colony, amid the decaying  buildings of Phnom Penh... I hope the author will write many more books  and that her publishers will bring her first novel back into print -- I  want to read it.  Thank you, Ms. Messud, for writing such a wonderful work.", "positive"),
