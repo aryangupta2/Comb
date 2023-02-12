@@ -58,7 +58,9 @@ async def get(product_name: str):
 
         reviews = []
         for thread_execution in concurrent.futures.as_completed(thread_results):
-            reviews.append(thread_execution.result())
+            result = thread_execution.result()
+            print(result)
+            reviews.append(result)
 
         store_reviews: List[StoreReview] = []
         article_reviews: List[ArticleReview] = []
