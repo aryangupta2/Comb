@@ -48,7 +48,7 @@ class Product(BaseModel):
 
 @app.get('/test/')
 def get(product_name: str):
-    return scrape_bestbuy(Scraper(), product_name)
+    return scrape_amazon(Scraper(), product_name)
 
 @app.get('/ratings/')
 def get(product_name: str):
