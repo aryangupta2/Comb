@@ -38,6 +38,14 @@ def find_reviews_sentiment(reviews):
     )
     return response.classifications
 
+# COHERE TESTING:    
+# inputs=[
+#   "This item was broken when it arrived",
+#   "The product is amazing",
+#   "The product was not too bad",
+# ]
+# print(find_reviews_sentiment(inputs))
+
 def build_top_amazon_review(scraper, XPATH) -> Review:
     review = scraper.browser.find_element(By.XPATH, XPATH)
     
