@@ -2,12 +2,12 @@ from cohere.classify import Example
 
 # hacked together dataset, may or may not work
 clickbait_examples=[
-  Example("Lycos launches screensaver to increase spammers' bills", "informative"),
-  Example("22 Podcasts That You Should Be Subscribing To In 2016", "non-informative"),
-  Example("Lessons (or Not) When a Start-Up Misses the Mark", "informative"),
-  Example("16 Super Chill Dogs Who Love The Sun", "non-informative"),
+  Example("iPhone 13 Review: Pros and Cons", "informative"),
+  Example("Should You Buy iPhone 13 in 2023?", "non-informative"),
+  Example("Samsung Galaxy S23 review", "informative"),
+  Example("The Samsung S23 Ultra is secretly INCREDIBLE", "non-informative"),
   Example("Apple concerned with iPhone icons' alleged misuse", "informative"),
-  Example("17 Clever iPhone Accessories You Didn't Know You Needed", "non-informative"),
+  Example("Nothing Phone (1) Review - ACTUALLY Better than iPhone?", "non-informative"),
   Example("Meth use now USA's top drug problem, survey finds", "informative"),
   Example("I'm an iPhone Person And This Is Why I Actually Love The New Android Phone", "non-informative"),
   Example("Welsh University announces intelligent robot conducting biology experiments", "informative"),
@@ -21,8 +21,7 @@ clickbait_examples=[
   Example("Review Panel Hears Rival Plans for New Spaceflights", "informative"),
   Example("10 Most Epic Ways People Have Quit Their Job", "non-informative"),
   Example("California Approaches a Deal on Budget Cuts", "informative"),
-  Example("kid shoots dad after he takes PS5..", "non-informative"),
-
+  Example("Should You Buy a PS4 in 2021", "non-informative"),
 ]
 
 # Amazon examples + Cohere.AI docs
