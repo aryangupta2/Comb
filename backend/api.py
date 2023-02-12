@@ -31,9 +31,9 @@ def create_scraper():
 
 
 class CompleteResponse(BaseModel):
-    stores: List[StoreReview] = None
-    articles: List[ArticleReview] = None
-    videos: List[VideoReview] = None
+    stores: List[StoreReview]
+    articles: List[ArticleReview]
+    videos: List[VideoReview]
 
 
 class Item(BaseModel):
@@ -50,15 +50,21 @@ def get(product_name: str):
         scrape_functions = [scrape_amazon, scrape_toms_guide, scrape_youtube]
         thread_results = [executor.submit(function, Scraper(), product_name) for function in scrape_functions]
 
-        results = []
+        reviews = []
         for thread_execution in concurrent.futures.as_completed(thread_results):
-            results.append(thread_execution.result())
+            reviews.append(thread_execution.result())
 
-        # scraper = create_scraper()
-        # amazon_review: StoreReview = scrape_amazon(scraper, product_name)
-        # toms_guide_review: ArticleReview = scrape_toms_guide(scraper, product_name)
-        # video_reviews: List[VideoReview] = scrape_youtube(scraper, product_name)
-        #return CompleteResponse(videos=video_reviews, stores=[amazon_review], articles=[toms_guide_review])
-        print(results)
-        return results
+        store_reviews: List[StoreReview] = []
+        article_reviews: List[ArticleReview] = []
+        video_reviews: List[VideoReview] = []
+
+        for review in reviews:
+            if isinstance(review, StoreReview):
+                store_reviews.append(review)
+            elif isinstance(review, ArticleReview):
+                article_reviews.append(review)
+            else:
+                video_reviews = review
+                
+        return CompleteResponse(stores= store_reviews, articles=article_reviews, videos=video_reviews)
  
