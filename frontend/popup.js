@@ -1,5 +1,5 @@
-document.addEventListener('DOMContentLoaded', main)
-
+main()
+/*
 const data = {
     "stores": [
         {
@@ -51,8 +51,9 @@ const data = {
     "article_average": 3.0,
     "customer_average": 4.2
 }
+*/
 
-function displayVideos() {
+function displayVideos(data) {
     const info = data['videos'];
     for (let video in info) {
         const container = document.createElement('div');
@@ -99,7 +100,7 @@ function updateHome(data) {
 }
 
 
-function displayRatings() {
+function displayRatings(data) {
     let articleRating = data['article_average'];
     const starsTotal = 5;
     let starsPercentage = articleRating / starsTotal * 100;
@@ -129,10 +130,22 @@ function disableLoading() {
 
 
 async function main() {
-    enableLoading()
-    const data = await getData();
-    localStorage.setItem("data", JSON.stringify(data));
-    disableLoading()
-    displayRatings();
-    displayVideos();
+    
+    let storageData = localStorage.getItem("data")
+    
+    if (storageData === null) {
+        
+        enableLoading()
+        const data = await getData();
+        localStorage.setItem("data", JSON.stringify(data));
+        disableLoading()
+        displayRatings(data);
+        displayVideos(data);
+        
+    } else {
+        storageData = JSON.parse(storageData)
+        displayRatings(storageData);
+        displayVideos(storageData);
+    }
+    
 }

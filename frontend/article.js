@@ -1,5 +1,5 @@
-document.addEventListener('DOMContentLoaded', main);
-
+main()
+/*
 const data = {
     "stores": [
         {
@@ -51,8 +51,10 @@ const data = {
     "article_average": 3.0,
     "customer_average": 4.2
 }
+*/
 
 function displayArticleReviews() {
+    let data = JSON.parse(localStorage.getItem("data"))
     const info = data['articles'];
     for (let site in info) {
         const container = document.createElement('div');

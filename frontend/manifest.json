@@ -3,6 +3,10 @@
   "name": "Comb",
   "version": "1.0.0",
   "description": "Get accurate reviews for any product",
+  "content-scripts": [{
+    "matches":["<all_urls>"],
+    "js": ["popup.js"]
+  }],
   "action": {
     "default_icon": "assets/comb_logo.png",
     "default_popup": "popup.html"

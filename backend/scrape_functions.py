@@ -509,7 +509,7 @@ def scrape_verge(scraper, product_name):
 
     article_hyperlink = browser.current_url
     
-    return ArticleReview(rating=rating, link=article_hyperlink, site='the-verge')
+    return ArticleReview(rating=rating, link=article_hyperlink, site='verge')
 
 def scrape_youtube(scraper, product_name):
     browser = scraper.browser

@@ -48,7 +48,7 @@ class Product(BaseModel):
 
 @app.get('/test/')
 def get(product_name: str):
-    return scrape_amazon(Scraper(), product_name)
+    return scrape_bestbuy(Scraper(), product_name)
 
 @app.get('/preloaded/')
 def get(product_name: str):
@@ -75,7 +75,7 @@ def get(product_name: str):
             "rating": 3.0
         },
         {
-            "site": "the-verge",
+            "site": "verge",
             "link": "https://www.theverge.com/21524288/apple-iphone-12-pro-review",
             "rating": 1.0
         },
