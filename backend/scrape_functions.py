@@ -74,15 +74,12 @@ def build_amazon_review(scraper, XPATH) -> Review:
     rating_element = review.find_element(By.XPATH, ".//a[1]/i/span")
     rating_text = rating_element.get_attribute('textContent')
     rating_float = float(rating_text[:3])
-    print('ayo')
 
     title_element = review.find_element(By.XPATH, ".//a[2]/span")
     title_text = title_element.get_attribute('textContent')
-    print('ayo2')
     
     read_more_element = review.find_element(By.XPATH, ".//a[1]")
     review_hyperlink = read_more_element.get_attribute('href')
-    print('ayo3')
     sentiment = find_reviews_sentiment(rating_text) # uses Cohere NLP
     return Review(title=title_text, link=review_hyperlink, rating=rating_float, sentiment=sentiment)
 
@@ -93,7 +90,6 @@ def scrape_amazon(scraper, product_name) -> StoreReview:
     # Search for the product
     browser.get('https://www.amazon.com/s?k=' + product_name)
     scrollDownAllTheWay(browser, 200)
-    print(browser.page_source)
     parent_xpath = "/html/body/div[1]/div[2]/div[1]/div[1]/div/span[1]/div[1]"
     scraper.wait(By.XPATH, parent_xpath)
     
@@ -172,12 +168,10 @@ def scrape_trusted_reviews(scraper, product_name) -> ArticleReview:
     # Get all of the products from the search and click on the one that matches most with product name
     parent = browser.find_element(By.XPATH, list_xpath)
     elements = parent.find_elements(By.TAG_NAME, 'li')
-    print(elements[0].text)
     closest_element = elements[0]
     highest_ratio = fuzz.ratio(product_name, slice_colon(closest_element.text))
     for element in elements:
         element_text = element.text
-        print(element_text)
         if not contains_review_str(element_text):
             continue
         ratio = fuzz.ratio(product_name, slice_colon(element_text))
@@ -211,7 +205,6 @@ def scrape_walmart(scraper, product_name) -> StoreReview:
     browser.get("https://www.walmart.ca/search?q=" + product_name)
     # Search for the product
     parent_ID = "product-results"
-    #print(browser.page_source)
     scrollDownAllTheWay(browser, 3)
 
     # Get all the products from the search and click on the one that matches the most with the product name
@@ -225,7 +218,6 @@ def scrape_walmart(scraper, product_name) -> StoreReview:
         if element.get_attribute('data-automation') != "name":
             continue
         element_text = element.text
-        print(element_text)
         ratio = fuzz.ratio(product_name, element_text)
         if ratio > highest_ratio:
             closest_element = element
@@ -233,19 +225,14 @@ def scrape_walmart(scraper, product_name) -> StoreReview:
     closest_element.click()
 
     scrollDownAllTheWay(browser, 3)
-    print(browser.current_url)
     #elements = browser.find_element(By.TAG_NAME, 'section')
     rating_float = 0.0
     try:
-        print('b')
         rating_element = browser.find_element(By.XPATH,"/html/body/div[1]/div/div[4]/div/div/div[2]/div[1]/div[1]/div[1]/div/div[8]/div/div[2]//div/div/div[2]/div[2]/div[2]/section/div/div/div[1]")
-        print('a')
         rating_text = rating_element.text
         rating_float = float(rating_text)
     except:
         return None
-
-    print('got through main rating')
 
     first_review_xpath = "/html/body/div[1]/div/div[4]/div/div/div[2]/div[1]/div[1]/div[1]/div/div[8]/div/div[2]//div/div/div[6]/div[1]/div/div/div/div/div[1]"
     second_review_xpath = "/html/body/div[1]/div/div[4]/div/div/div[2]/div[1]/div[1]/div[1]/div/div[8]/div/div[2]//div/div/div[6]/div[2]/div/div/div/div/div[1]"
@@ -269,7 +256,6 @@ def scrape_walmart(scraper, product_name) -> StoreReview:
 
 def build_walmart_review(scraper, xpath):
     element = scraper.browser.find_element(By.XPATH, xpath)
-    print('building review')
     meta_rating = element.find_element(By.XPATH, './/meta[2]')
     rating = meta_rating.get_attribute('ratingValue')
 
@@ -281,8 +267,6 @@ def build_walmart_review(scraper, xpath):
     review_text = review_span.text
 
     sentiment = find_reviews_sentiment(review_text) # uses Cohere NLP
-
-    print(title_text)
 
     return Review(title=title_text, link=scraper.browser.current_url, sentiment= sentiment, rating=rating)
 
@@ -306,7 +290,6 @@ def scrollDownAllTheWay(driver, nb):
             break
 
         nb -= 1
-        print(nb)
     return True
 
 def scrape_bestbuy(scraper, product_name) -> StoreReview:
@@ -320,18 +303,13 @@ def scrape_bestbuy(scraper, product_name) -> StoreReview:
     # soup = BeautifulSoup(browser.page_source, 'lxml')
     # items = []
     # items_selector = soup.select('a[itemprop="url"]')
-    # print(items_selector)
 
     scrollDownAllTheWay(browser, 1000)
     
     # Get all the products from the search and click on the one that matches the most with the product name
     #parent = browser.find_element(By.XPATH, parent_XPATH)
     elements = browser.find_elements(By.TAG_NAME, "a")
-    for element in elements:
-        print(element.get_attribute('innerHTML'))
     elements = [element for element in elements if element.get_attribute('itemprop') is not None]
-    for element in elements:
-        print(element.get_attribute('innerHTML'))
     
     #"/html/body/div[1]/div[1]/div[3]/div/div[2]/div/div/div[8]/div[2]/div[2]/div[1]/div/div[1]"
     #"/html/body/div[1]/div[1]/div[3]/div/div[2]/div/div/div[8]/div[2]/div[2]/div[1]/div/div[1]/div[1]/div/a/div/div[2]/div[2]/span/div/p"
@@ -343,7 +321,6 @@ def scrape_bestbuy(scraper, product_name) -> StoreReview:
     for element in elements:
         text_element = element.find_element(By.TAG_NAME, "div")
         element_text = text_element.text
-        print(element_text)
         ratio = fuzz.ratio(product_name, element_text)
         if ratio > highest_ratio:
             closest_element = element
@@ -402,8 +379,6 @@ def build_bestbuy_review(scraper, xpath):
         rating = 5.0
     elif sentiment == "negative":
         rating = 1.0
-
-    print(title_text)
 
     return Review(title=title_text, link=scraper.browser.current_url, sentiment= sentiment, rating=rating)
     
@@ -473,8 +448,6 @@ def scrape_rtings(scraper, product_name):
         if ratio > highest_ratio:
             closest_element = element
             highest_ratio = ratio
-        print(element.text)
-        print(ratio)
     if highest_ratio < 20:
         return None
     browser.execute_script("arguments[0].click();", closest_element) 
@@ -552,7 +525,6 @@ def scrape_youtube(scraper, product_name):
             title_text = title_element.text
             if "review" not in title_text.lower():
                 continue
-            print(title_element)
             ratio = fuzz.ratio(product_name, title_text)
             tuples.append((ratio, element))
         except:
@@ -563,9 +535,6 @@ def scrape_youtube(scraper, product_name):
     sorted_tuples = sorted_tuples[:5]
 
     video_reviews: List[VideoReview] = []
-
-    print(tuples)
-    print(sorted_tuples)
     
     for best_video_tuple in sorted_tuples:
         video_element = best_video_tuple[1]
@@ -576,9 +545,6 @@ def scrape_youtube(scraper, product_name):
 
         thumbnail_element = video_element.find_element(By.ID, 'thumbnail')
         video_link = thumbnail_element.get_attribute('href')
-
-        print(video_link)
-        print(img_src)
 
         if None == video_link or None == img_src:
             continue
