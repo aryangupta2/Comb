@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', main)
+document.addEventListener('DOMContentLoaded', main);
 
 const data = {
     "stores": [
@@ -52,84 +52,46 @@ const data = {
     "customer_average": 4.2
 }
 
-function displayVideos() {
-    const info = data['videos'];
-    for (let video in info) {
+function displayCustomerReviews() {
+    const info = data['stores'][0]['reviews'];
+    let reviewCounter = 0;
+    for (let review in info) {
         const container = document.createElement('div');
-        container.classList.add('video-container')
+        container.classList.add('review-container')
+
+        const infoContainer = document.createElement('div');
+        infoContainer.classList.add('info-container');
     
+        const title = document.createElement('h2');
+        const titleText = document.createTextNode(info[review]['title']);
+        title.appendChild(titleText);
+        title.classList.add('review-title');
+        infoContainer.appendChild(title);
+
+        const rating = document.createElement('h3');
+        const ratingText = document.createTextNode(`${info[review]['rating']}/5`);
+        rating.appendChild(ratingText);
+        title.classList.add('review-rating');
+        infoContainer.appendChild(rating);
 
         const link = document.createElement('a');
-        link.href = info[video]['link'];
+        link.href = info[reviewCounter]['link'];
+        reviewCounter++;
         link.target = '_blank';
     
-        const thumbnail = document.createElement('img');
-        thumbnail.src =  info[video]['thumbnail_url'];
-        thumbnail.classList.add('thumbnail');
+        const companyLogo = document.createElement('img');
+        companyLogo.src =  `assets/${data['stores'][0]['site']}_logo.jpg`;
+        companyLogo.classList.add('company-logo');
 
-        link.appendChild(thumbnail)
+        link.appendChild(companyLogo)
 
         container.appendChild(link);
-        document.getElementById('videos').appendChild(container)
+        container.appendChild(infoContainer);
+    
+        document.body.appendChild(container)
     }
 }
 
-async function getData(url='') {
-    const data = "Apple AirPods (2nd generation) In-Ear Truly Wireless Headphones - White"
-    const baseURL = "http://localhost:8000/ratings/?product_name="
-    const response = await fetch(baseURL + data, {
-        method: 'GET', 
-        mode: 'cors',
-        cache: 'no-cache', 
-        credentials: 'same-origin', 
-        headers: {
-          'Content-Type': 'application/json',
-          "Access-Control-Allow-Origin": "*"
-        },
-        redirect: 'follow',
-        referrerPolicy: 'no-referrer',
-      }).then((response) => response.json());
-      return response;
-}
-
-function updateHome(data) {
-    window.localStorage.setItem('productData', JSON.stringify(data));
-    console.log(data);
-}
-
-
-function displayRatings() {
-    let articleRating = data['article_average'];
-    const starsTotal = 5;
-    let starsPercentage = articleRating / starsTotal * 100;
-    let starsPercentageRounded = `${Math.round((starsPercentage / 10) * 10)}%`;
-    document.getElementById("1").style.width = starsPercentageRounded;
-
-    const customerRating = data['customer_average'];
-    starsPercentage = customerRating / starsTotal * 100;
-    starsPercentageRounded = `${Math.round((starsPercentage / 10) * 10)}%`;
-    document.getElementById("2").style.width = starsPercentageRounded;
-}
-
-
-function enableLoading() {
-    document.getElementById('top').style.display = 'none';
-    const loading = document.createElement('img');
-    loading.src = 'assets/comb_logo.png';
-    loading.setAttribute('id', 'loading');
-    document.body.appendChild(loading)
-}
-
-function disableLoading() {
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('top').style.display = 'inline-block';
-}
-
-
-window.onload = async function main() {
-    enableLoading()
-    const data = await getData();
-    disableLoading()
-    displayRatings();
-    displayVideos();
+function main() {
+    displayCustomerReviews();
 }
