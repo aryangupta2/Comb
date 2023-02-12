@@ -8,6 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import cohere
 from cohere.classify import Example
 from datasets import *
+import time
 
 class VideoReview(BaseModel):
     link: str
@@ -78,6 +79,7 @@ def scrape_amazon(scraper, product_name) -> StoreReview:
 
     # Search for the product
     browser.get('https://www.amazon.com/s?k=' + product_name)
+    scrollDownAllTheWay(browser)
     parent_xpath = "//*[@id=\"search\"]/div[1]/div[1]/div/span[1]/div[1]"
     scraper.wait(By.XPATH, parent_xpath)
     
@@ -239,6 +241,24 @@ def scrape_walmart(scraper, product_name) -> StoreReview:
         return StoreReview(reviews=[review_1, review_2], rating=rating_float, site=store)
 # Above is UNFINISHED
 
+def scrollDown(driver, value):
+    driver.execute_script("window.scrollBy(0,"+str(value)+")")
+
+# Scroll down the page
+def scrollDownAllTheWay(driver):
+    old_page = driver.page_source
+    while True:
+        for i in range(2):
+            scrollDown(driver, 500)
+            time.sleep(2)
+
+        new_page = driver.page_source
+        if new_page != old_page:
+            old_page = new_page
+        else:
+            break
+    return True
+
 def scrape_bestbuy(scraper, product_name) -> StoreReview:
     browser = scraper.browser
     store = "bestbuy"
@@ -246,10 +266,13 @@ def scrape_bestbuy(scraper, product_name) -> StoreReview:
     
 
     browser.get("https://www.bestbuy.ca/en-ca/search?search=" + product_name)
-    parent_XPATH = "/html/body/div[1]/div/div[2]/div[1]/div/main/div[1]/div[3]/div/div/ul/div"
-    WebDriverWait(browser, 1)
-    scraper.wait(By.XPATH, parent_XPATH)
-    
+
+    # soup = BeautifulSoup(browser.page_source, 'lxml')
+    # items = []
+    # items_selector = soup.select('a[itemprop="url"]')
+    # print(items_selector)
+
+    scrollDownAllTheWay(browser)
     
     # Get all the products from the search and click on the one that matches the most with the product name
     parent = browser.find_element(By.XPATH, parent_XPATH)
