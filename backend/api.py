@@ -44,10 +44,14 @@ class Item(BaseModel):
 class Product(BaseModel):
     product_name: str
 
+@app.get('/test/')
+def get(product_name: str):
+    return scrape_walmart(Scraper(), product_name)
+
 @app.get('/ratings/')
 def get(product_name: str):
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        scrape_functions = [scrape_amazon, scrape_toms_guide, scrape_youtube, scrape_trusted_reviews]
+        scrape_functions = [scrape_amazon, scrape_toms_guide, scrape_youtube]
         thread_results = [executor.submit(function, Scraper(), product_name) for function in scrape_functions]
 
         reviews = []
@@ -59,12 +63,15 @@ def get(product_name: str):
         video_reviews: List[VideoReview] = []
 
         for review in reviews:
+            if review is None:
+                continue
+
             if isinstance(review, StoreReview):
                 store_reviews.append(review)
             elif isinstance(review, ArticleReview):
                 article_reviews.append(review)
             else:
                 video_reviews = review
-                
+
         return CompleteResponse(stores= store_reviews, articles=article_reviews, videos=video_reviews)
  
