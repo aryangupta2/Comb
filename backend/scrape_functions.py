@@ -54,6 +54,7 @@ def build_amazon_review(scraper, XPATH) -> Review:
     return Review(title=title_text, link=review_hyperlink, rating=rating_float)
 
 def scrape_amazon(scraper, product_name) -> StoreReview:
+    
     store = "amazon"
     browser = scraper.browser
 
@@ -62,6 +63,7 @@ def scrape_amazon(scraper, product_name) -> StoreReview:
     parent_xpath = "//*[@id=\"search\"]/div[1]/div[1]/div/span[1]/div[1]"
     WebDriverWait(browser, 3)
     scraper.wait(By.XPATH, parent_xpath)
+    print('scrape_amazon')
     
     # Get all the products from the search and click on the one that matches the most with the product name
     parent = browser.find_element(By.XPATH, parent_xpath)
@@ -112,6 +114,7 @@ def slice_colon(str):
     return str[:index]
 
 def scrape_toms_guide(scraper, product_name) -> ArticleReview:
+    
     browser = scraper.browser
 
     # Search for the product
@@ -119,6 +122,7 @@ def scrape_toms_guide(scraper, product_name) -> ArticleReview:
     list_xpath = "//*[@id=\"content\"]/section/div[2]"
     WebDriverWait(browser, 3)
     scraper.wait(By.XPATH, list_xpath)
+    print('scrape_toms_guide')
 
     # Get all the products from the search and click on the one that matches the most with the product name
     parent = browser.find_element(By.XPATH, list_xpath)
@@ -145,6 +149,7 @@ def scrape_toms_guide(scraper, product_name) -> ArticleReview:
     return ArticleReview(rating=rating, site='toms-guide')
 
 def scrape_youtube(scraper, product_name):
+    
     browser = scraper.browser
     product_name += ' Review'
     browser.get("https://www.youtube.com/results?search_query=" + product_name)
@@ -152,6 +157,7 @@ def scrape_youtube(scraper, product_name):
     parent_xpath = "//*[@id=\"contents\"]"
     WebDriverWait(browser, 1)
     scraper.wait(By.XPATH, parent_xpath)
+    print('scrape_youtube')
     
     # Get all the products from the search and click on the one that matches the most with the product name
     parent = browser.find_element(By.XPATH, parent_xpath)
