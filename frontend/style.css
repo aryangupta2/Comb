@@ -19,6 +19,11 @@ h1 {
 
 }
 
+button {
+  background: none;
+  border: none;
+}
+
 .title-container {
   display: flex;
   justify-content: center;
@@ -123,4 +128,39 @@ h2 {
 .bottom-nav a:hover a:active {
   opacity: 1;
   color: navy;
+}
+
+.company-logo {
+  width: 15vw;
+  height: 15vh;
+}
+
+.info-container {
+  display: inline-block;
+  padding-left: 20px;
+  align-items: center;
+}
+  
+
+.review-title {
+  vertical-align: middle;
+}
+
+.review-rating {
+  display: block;
+  font-size: 4vh;
+  justify-content: center; 
+  align-items: center;
+}
+
+.video-container {
+  justify-content: center;
+}
+
+#videos {
+  justify-content: end;
+}
+
+#video-title {
+  text-align: center; 
 }
