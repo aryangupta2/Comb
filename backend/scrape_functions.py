@@ -81,6 +81,7 @@ def scrape_amazon(scraper, product_name) -> StoreReview:
     browser.get('https://www.amazon.com/s?k=' + product_name)
     scrollDownAllTheWay(browser)
     parent_xpath = "//*[@id=\"search\"]/div[1]/div[1]/div/span[1]/div[1]"
+    parent_xpath = "/html/body/div[1]/div[2]/div[1]/div[1]/div/span[1]/div[1]"
     scraper.wait(By.XPATH, parent_xpath)
     
     # Get all the products from the search and click on the one that matches the most with the product name
