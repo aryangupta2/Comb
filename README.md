@@ -11,4 +11,19 @@ CHROMEDRIVER_PATH=(path to your chromedriver)/chromedriver.exe
 
 4. Install venv if you don't have it (for mac: python3 install venv)
 
-5. 
+5. Create a new venv in the Comb backend directory:
+`python3 -m venv [name]` (creates a new venv named 'env')
+
+6. Enter the new venv from your shell:
+`source [name]/bin/activate`
+
+7. Install all of the package requirements:
+`pip install -r requirements.txt`
+
+8. Launch the API server with this command:
+`uvicorn api:app`
+If there were no problems during setup, you should see similar output to this in your shell:
+`INFO:     Started server process [11461]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)`
