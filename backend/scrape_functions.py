@@ -412,7 +412,10 @@ def scrape_toms_guide(scraper, product_name) -> ArticleReview:
     print(browser.current_url)
 
     star_parent_class = "chunk"
-    scraper.wait(By.CLASS_NAME, star_parent_class)
+    try:
+        scraper.wait(By.CLASS_NAME, star_parent_class)
+    except:
+        return None
 
     star_parent = browser.find_element(By.CLASS_NAME, star_parent_class)
     stars = star_parent.find_elements(By.CSS_SELECTOR, "*")
