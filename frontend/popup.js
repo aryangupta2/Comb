@@ -76,7 +76,8 @@ function displayVideos() {
 
 async function getData(url='') {
     const data = "Apple AirPods (2nd generation) In-Ear Truly Wireless Headphones - White"
-    const baseURL = "http://localhost:8000/ratings/?product_name="
+    const endpoint = 'preloaded' // 'ratings'
+    const baseURL = `http://localhost:8000/${endpoint}/?product_name=`
     const response = await fetch(baseURL + data, {
         method: 'GET', 
         mode: 'cors',
