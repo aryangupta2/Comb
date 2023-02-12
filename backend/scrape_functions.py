@@ -493,7 +493,13 @@ def scrape_verge(scraper, product_name):
         return None
     closest_element.click()
 
-    span_element = browser.find_element(By.XPATH,"/html/body/div[1]/div/main/article/div[2]/div[1]/div[1]/div[8]/aside/div[1]/div[3]/span[1]")
+    spans = browser.find_elements(By.TAG_NAME, 'span')
+    prev = None
+    for span in spans:
+        if span.text.lower() == "verge score":
+            break
+        prev = span
+    span_element = prev
     rating_text = span_element.text
     rating = float(rating_text)/2
 
