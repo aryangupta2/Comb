@@ -55,7 +55,6 @@ def build_amazon_review(scraper, XPATH) -> Review:
     return Review(title=title_text, link=review_hyperlink, rating=rating_float)
 
 def scrape_amazon(scraper, product_name) -> StoreReview:
-    
     store = "amazon"
     browser = scraper.browser
 
@@ -64,7 +63,6 @@ def scrape_amazon(scraper, product_name) -> StoreReview:
     parent_xpath = "//*[@id=\"search\"]/div[1]/div[1]/div/span[1]/div[1]"
     WebDriverWait(browser, 3)
     scraper.wait(By.XPATH, parent_xpath)
-    print('scrape_amazon')
     
     # Get all the products from the search and click on the one that matches the most with the product name
     parent = browser.find_element(By.XPATH, parent_xpath)
@@ -114,8 +112,47 @@ def slice_colon(str):
     index = str.find(':')
     return str[:index]
 
+# UNFINISHED, DOES NOT WORK
+def scrape_trusted_reviews(scraper, product_name) -> ArticleReview:
+    browser = scraper.browser
+
+    # Search for the product
+    browser.get('https://www.trustedreviews.com/?s=' + product_name)
+    list_xpath = '//*[@id="content"]/article/section[2]/div[1]/ul'
+    WebDriverWait(browser, 3)
+    scraper.wait(By.XPATH, list_xpath)
+
+    # Get all of the products from the search and click on the one that matches most with product name
+    parent = browser.find_element(By.XPATH, list_xpath)
+    elements = parent.find_elements(By.TAG_NAME, 'li')
+    print(elements[0].text)
+    closest_element = elements[0]
+    highest_ratio = fuzz.ratio(product_name, slice_colon(closest_element.text))
+    for element in elements:
+        ratio = fuzz.ratio(product_name, slice_colon(element.text))
+        if ratio > highest_ratio:
+            closest_element = elements
+            highest_ratio = ratio
+    closest_element.click()
+
+    # Rating is not displayed in text, but with pictures instead
+    # Hacky method to add the number of stars and convert that to an out of 5 rating
+    star_parent_class = "score-stars score-stars--large"
+    scraper.wait(By.CLASS_NAME, star_parent_class)
+
+    star_parent = browser.find_element(By.CLASS_NAME, star_parent_class)
+    stars = star_parent.find_elements(By.CSS_SELECTOR, "img[data-src='wp-content/themes/kiara-child-theme/assets/image/tr__fullstar.svg']")
+    half_stars = star_parent.find_elements(By.CSS_SELECTOR, "img[data-src='wp-content/themes/kiara-child-theme/assets/image/tr__halfstar.svg']")
+    rating: float = len(stars)
+    if(len(half_stars)) > 0:
+        rating -= 0.5
+
+    article_hyperlink = browser.current_url
+
+    return ArticleReview(rating=rating, link=article_hyperlink, site="trusted-reviews")
+# Above is UNFINISHED
+
 def scrape_toms_guide(scraper, product_name) -> ArticleReview:
-    
     browser = scraper.browser
 
     # Search for the product
@@ -123,7 +160,6 @@ def scrape_toms_guide(scraper, product_name) -> ArticleReview:
     list_xpath = "//*[@id=\"content\"]/section/div[2]"
     WebDriverWait(browser, 3)
     scraper.wait(By.XPATH, list_xpath)
-    print('scrape_toms_guide')
 
     # Get all the products from the search and click on the one that matches the most with the product name
     parent = browser.find_element(By.XPATH, list_xpath)
@@ -152,7 +188,6 @@ def scrape_toms_guide(scraper, product_name) -> ArticleReview:
     return ArticleReview(rating=rating, link=article_hyperlink, site='toms-guide')
 
 def scrape_youtube(scraper, product_name):
-    
     browser = scraper.browser
     product_name += ' Review'
     browser.get("https://www.youtube.com/results?search_query=" + product_name)
@@ -160,7 +195,6 @@ def scrape_youtube(scraper, product_name):
     parent_xpath = "//*[@id=\"contents\"]"
     WebDriverWait(browser, 1)
     scraper.wait(By.XPATH, parent_xpath)
-    print('scrape_youtube')
     
     # Get all the products from the search and click on the one that matches the most with the product name
     parent = browser.find_element(By.XPATH, parent_xpath)
@@ -207,4 +241,5 @@ def scrape_youtube(scraper, product_name):
         video_reviews.append(VideoReview(link=video_link, thumbnail_url=img_src))
     
     return video_reviews
+
 

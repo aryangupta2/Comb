@@ -1,4 +1,4 @@
-# Scrutinize
+# Comb
 uOttaHack project
 
 To run the server locally, you need to follow these steps:
