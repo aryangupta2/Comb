@@ -18,6 +18,7 @@ class Review(BaseModel):
     title: str
     link: str
     rating: float
+    sentiment: str
 
 class StoreReview(BaseModel):
     site: str
@@ -29,22 +30,15 @@ class ArticleReview(BaseModel):
     link: str
     rating: float
  
-def find_reviews_sentiment(reviews):
+def find_reviews_sentiment(review):
     co = cohere.Client('B9k2WYc1FhKhqhJQq4fNFUoVTeZ9pjZtVb6aDgOZ')
+    reviews = [review]
     response = co.classify(
         model='large',
         inputs=reviews,
         examples=sentiment_examples,
     )
-    return response.classifications
-
-# COHERE TESTING:    
-# inputs=[
-#   "This item was broken when it arrived",
-#   "The product is amazing",
-#   "The product was not too bad",
-# ]
-# print(find_reviews_sentiment(inputs))
+    return response.classifications[0].prediction
 
 def build_top_amazon_review(scraper, XPATH) -> Review:
     review = scraper.browser.find_element(By.XPATH, XPATH)
@@ -58,7 +52,9 @@ def build_top_amazon_review(scraper, XPATH) -> Review:
 
     read_more_element = review.find_element(By.XPATH, ".//div[2]/a")
     review_hyperlink = read_more_element.get_attribute('href')
-    return Review(title=title_text, link=review_hyperlink, rating=rating_float)
+
+    sentiment = find_reviews_sentiment(rating_text) # uses Cohere NLP
+    return Review(title=title_text, link=review_hyperlink, rating=rating_float, sentiment=sentiment)
 
 def build_amazon_review(scraper, XPATH) -> Review:
     review = scraper.browser.find_element(By.XPATH, XPATH)
@@ -72,7 +68,9 @@ def build_amazon_review(scraper, XPATH) -> Review:
     
     read_more_element = review.find_element(By.XPATH, ".//a[1]")
     review_hyperlink = read_more_element.get_attribute('href')
-    return Review(title=title_text, link=review_hyperlink, rating=rating_float)
+
+    sentiment = find_reviews_sentiment(rating_text) # uses Cohere NLP
+    return Review(title=title_text, link=review_hyperlink, rating=rating_float, sentiment=sentiment)
 
 def scrape_amazon(scraper, product_name) -> StoreReview:
     store = "amazon"
