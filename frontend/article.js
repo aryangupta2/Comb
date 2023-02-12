@@ -65,7 +65,6 @@ function displayArticleReviews() {
     
         const title = document.createElement('h2');
         const titleText = document.createTextNode(info[site]['site']);
-        console.log(info[site]['site']);
         title.appendChild(titleText);
         title.classList.add('review-title');
         infoContainer.appendChild(title);
@@ -84,11 +83,13 @@ function displayArticleReviews() {
         companyLogo.src =  `assets/${info[site]['site']}_logo.jpg`;
         companyLogo.classList.add('company-logo');
 
-        link.appendChild(companyLogo)
-
-        container.appendChild(link)
-        container.append(infoContainer)
-        document.body.appendChild(container)
+        container.append(companyLogo);
+        container.append(infoContainer);
+        link.append(container);
+        // container.setAttribute('onclick', `location.href='${info[site]['link']}';`);
+        // container.setAttribute('target', '_blank');
+        // container.style = 'cusrsor: pointer;';
+        document.body.appendChild(link);
     }
 }
 

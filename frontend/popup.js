@@ -133,7 +133,7 @@ async function main() {
     
     let storageData = localStorage.getItem("data")
     
-    if (storageData === null) {
+    // if (storageData === null) {
         
         enableLoading()
         const data = await getData();
@@ -142,10 +142,9 @@ async function main() {
         displayRatings(data);
         displayVideos(data);
         
-    } else {
-        storageData = JSON.parse(storageData)
-        displayRatings(storageData);
-        displayVideos(storageData);
-    }
-    
+    // } else {
+    //     storageData = JSON.parse(storageData)
+    //     displayRatings(storageData);
+    //     displayVideos(storageData);
+    // }
 }
