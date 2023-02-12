@@ -490,14 +490,9 @@ def scrape_verge(scraper, product_name):
         return None
     closest_element.click()
 
-    sentiment_text_element = browser.find_element(By.XPATH, "//*[@id=\"__next\"]/div/main/article/div[1]/div[1]/div[1]/div[1]/h2")
-    sentiment = find_reviews_sentiment(sentiment_text_element.text)
-
-    rating = 4.0
-    if sentiment == "positive":
-        rating = 4.8
-    elif sentiment == "negative":
-        rating = 1.0
+    span_element = browser.find_element(By.XPATH,"/html/body/div[1]/div/main/article/div[2]/div[1]/div[1]/div[8]/aside/div[1]/div[3]/span[1]")
+    rating_text = span_element.text
+    rating = float(rating_text)/2
 
     article_hyperlink = browser.current_url
     
