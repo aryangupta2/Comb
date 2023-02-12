@@ -53,7 +53,7 @@ def get(product_name: str):
 @app.get('/ratings/')
 def get(product_name: str):
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        scrape_functions = [scrape_amazon, scrape_toms_guide, scrape_youtube, scrape_bestbuy]
+        scrape_functions = [scrape_amazon, scrape_toms_guide, scrape_youtube, scrape_bestbuy, scrape_walmart]
         thread_results = [executor.submit(function, Scraper(), product_name) for function in scrape_functions]
 
         reviews = []
