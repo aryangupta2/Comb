@@ -79,8 +79,7 @@ def scrape_amazon(scraper, product_name) -> StoreReview:
 
     # Search for the product
     browser.get('https://www.amazon.com/s?k=' + product_name)
-    scrollDownAllTheWay(browser)
-    parent_xpath = "//*[@id=\"search\"]/div[1]/div[1]/div/span[1]/div[1]"
+    scrollDownAllTheWay(browser, 200)
     parent_xpath = "/html/body/div[1]/div[2]/div[1]/div[1]/div/span[1]/div[1]"
     scraper.wait(By.XPATH, parent_xpath)
     
@@ -246,9 +245,9 @@ def scrollDown(driver, value):
     driver.execute_script("window.scrollBy(0,"+str(value)+")")
 
 # Scroll down the page
-def scrollDownAllTheWay(driver):
+def scrollDownAllTheWay(driver, nb):
     old_page = driver.page_source
-    while True:
+    while nb > 0:
         for i in range(2):
             scrollDown(driver, 500)
             time.sleep(2)
@@ -258,6 +257,8 @@ def scrollDownAllTheWay(driver):
             old_page = new_page
         else:
             break
+
+        nb -= 1
     return True
 
 def scrape_bestbuy(scraper, product_name) -> StoreReview:
@@ -273,7 +274,7 @@ def scrape_bestbuy(scraper, product_name) -> StoreReview:
     # items_selector = soup.select('a[itemprop="url"]')
     # print(items_selector)
 
-    scrollDownAllTheWay(browser)
+    scrollDownAllTheWay(browser, 1000)
     
     # Get all the products from the search and click on the one that matches the most with the product name
     parent = browser.find_element(By.XPATH, parent_XPATH)
@@ -363,6 +364,8 @@ def scrape_youtube(scraper, product_name):
     browser = scraper.browser
     product_name += ' Review'
     browser.get("https://www.youtube.com/results?search_query=" + product_name)
+
+    scrollDownAllTheWay(browser, 20)
 
     parent_xpath = "//*[@id=\"contents\"]"
     scraper.wait(By.XPATH, parent_xpath)
