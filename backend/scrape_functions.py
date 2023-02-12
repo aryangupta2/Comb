@@ -80,6 +80,7 @@ def scrape_amazon(scraper, product_name) -> StoreReview:
     # Search for the product
     browser.get('https://www.amazon.com/s?k=' + product_name)
     scrollDownAllTheWay(browser, 200)
+    print(browser.page_source)
     parent_xpath = "/html/body/div[1]/div[2]/div[1]/div[1]/div/span[1]/div[1]"
     scraper.wait(By.XPATH, parent_xpath)
     
