@@ -48,12 +48,12 @@ class Product(BaseModel):
 
 @app.get('/test/')
 def get(product_name: str):
-    return scrape_walmart(Scraper(), product_name)
+    return scrape_amazon(Scraper(), product_name)
 
 @app.get('/ratings/')
-def get(product_name: str):
+async def get(product_name: str):
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        scrape_functions = [scrape_amazon, scrape_toms_guide, scrape_youtube, scrape_bestbuy, scrape_walmart]
+        scrape_functions = [scrape_amazon, scrape_toms_guide, scrape_youtube, scrape_bestbuy, scrape_walmart, scrape_verge, scrape_rtings]
         thread_results = [executor.submit(function, Scraper(), product_name) for function in scrape_functions]
 
         reviews = []
@@ -80,8 +80,13 @@ def get(product_name: str):
             else:
                 video_reviews = review
         
-        article_avg = article_sum/len(article_reviews)
-        customer_avg = customer_sum/len(store_reviews)
+        article_avg = 0
+        if len(article_reviews) > 0:
+            article_avg = article_sum/len(article_reviews)
+
+        customer_avg = 0
+        if len(store_reviews) > 0:
+            customer_avg = customer_sum/len(store_reviews)
 
         return CompleteResponse(stores= store_reviews, articles=article_reviews, videos=video_reviews, article_average=article_avg, customer_average=customer_avg)
  
