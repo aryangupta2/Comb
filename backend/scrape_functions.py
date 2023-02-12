@@ -500,9 +500,12 @@ def scrape_verge(scraper, product_name):
         if span.text.lower() == "verge score":
             break
         prev = span
-    span_element = prev
-    rating_text = span_element.text
-    rating = float(rating_text)/2
+    if prev is None:
+        rating = 3.0
+    else:
+        span_element = prev
+        rating_text = span_element.text
+        rating = float(rating_text)/2
 
     article_hyperlink = browser.current_url
     
