@@ -4,7 +4,7 @@ from typing import List
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-
+from selenium.common.exceptions import NoSuchElementException
 import cohere
 from cohere.classify import Example
 from datasets import *
@@ -30,7 +30,9 @@ class ArticleReview(BaseModel):
     site: str
     link: str
     rating: float
- 
+# positive
+# neutral
+# negative
 def find_reviews_sentiment(review):
     co = cohere.Client('B9k2WYc1FhKhqhJQq4fNFUoVTeZ9pjZtVb6aDgOZ')
     reviews = [review]
@@ -187,8 +189,8 @@ def scrape_walmart(scraper, product_name) -> StoreReview:
     # Search for the product
     parent_ID = "product-results"
     #print(browser.page_source)
-    WebDriverWait(browser, 1)
-    print(browser.find_elements(By.XPATH, ".//*"))
+    scrollDownAllTheWay(browser, 2)
+
     scraper.wait(By.ID, parent_ID)
     
     
@@ -284,6 +286,8 @@ def scrape_bestbuy(scraper, product_name) -> StoreReview:
     for element in elements:
         print(element.get_attribute('innerHTML'))
     elements = [element for element in elements if element.get_attribute('itemprop') is not None]
+    for element in elements:
+        print(element.get_attribute('innerHTML'))
     
     #"/html/body/div[1]/div[1]/div[3]/div/div[2]/div/div/div[8]/div[2]/div[2]/div[1]/div/div[1]"
     #"/html/body/div[1]/div[1]/div[3]/div/div[2]/div/div/div[8]/div[2]/div[2]/div[1]/div/div[1]/div[1]/div/a/div/div[2]/div[2]/span/div/p"
@@ -298,38 +302,65 @@ def scrape_bestbuy(scraper, product_name) -> StoreReview:
             closest_element = element
             highest_ratio = ratio
     closest_element.click()
+    print(browser.current_url)
     
-    rating_xpath = "//*[@id=\"reviewsMedley\"]/div/div[1]/span[1]/span/div[2]/div/div[2]/div/span/span"
-    scraper.wait(By.XPATH, rating_xpath)
+    rating_xpath = "/html/body/div[1]/div/div[4]/section[3]/div[1]/div[2]/div[1]/div[2]/label/strong"
 
-    # Find the rating for the product
-    rating = browser.find_element(By.XPATH, rating_xpath)
-    rating_text = rating.text
-    rating_float = float(rating_text[:3])
-
-    # Go the the customer review page
-    all_reviews_xpath = "//*[@id=\"cr-pagination-footer-0\"]/a"
-    all_reviews_css_selector = "a[data-hook='see-all-reviews-link-foot']"
     
-    scraper.wait(By.CSS_SELECTOR, all_reviews_css_selector)
+    try:
+        scraper.wait(By.XPATH, rating_xpath)
 
-    see_all_reviews = browser.find_element(By.CSS_SELECTOR, all_reviews_css_selector)
-    see_all_reviews.click()
+        # Find the rating for the product
+        rating = browser.find_element(By.XPATH, rating_xpath)
+        rating_float = float(rating.text)
+
+        rating.click()
+    except:
+        return None
+
+    first_review_xpath = "/html/body/div[1]/div/div[4]/div/div[2]/div/div[1]/div/div/div/div/div/div[3]/ul/li[1]/div/div"
+    second_review_xpath = "/html/body/div[1]/div/div[4]/div/div[2]/div/div[1]/div/div/div/div/div/div[3]/ul/li[2]/div/div"
+
+    reviews: List[Review] = []
+    try:
+        scraper.wait(By.XPATH, first_review_xpath)
+        review = build_bestbuy_review(scraper, first_review_xpath)
+        reviews.append(review)
+    except:
+        pass
+
+    try:
+        scraper.wait(By.XPATH, second_review_xpath)
+        review = build_bestbuy_review(scraper, second_review_xpath)
+        reviews.append(review)
+    except:
+        pass
 
     # Select the best positive and critical reviews
-    pos_review_xpath = "/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[1]/div/div/div[1]/div[1]"
-    general_review_xpath = "/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[5]/div[3]/div/div[1]/div/div/div[2]"
-    WebDriverWait(browser, 10).until(lambda driver: driver.find_elements(By.XPATH, pos_review_xpath) or
-                                               driver.find_elements(By.XPATH, general_review_xpath))[0]
+    
+    return StoreReview(reviews=reviews, rating = rating_float, site=store)
 
-    if len(browser.find_elements(By.XPATH, pos_review_xpath)) > 0:
-        positive_review: Review = build_top_amazon_review(scraper, pos_review_xpath)
-        critical_review: Review = build_top_amazon_review(scraper, "/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[1]/div/div/div[2]/div[1]")
-        return StoreReview(reviews=[positive_review, critical_review], rating=rating_float, site=store)
-    else:
-        review_1: Review = build_amazon_review(scraper, general_review_xpath)
-        review_2: Review = build_amazon_review(scraper, "/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[5]/div[3]/div/div[2]/div/div/div[2]")
-        return StoreReview(reviews=[review_1, review_2], rating=rating_float, site=store)
+def build_bestbuy_review(scraper, xpath): 
+    element = scraper.browser.find_element(By.XPATH, xpath)
+    span_element = element.find_element(By.TAG_NAME, 'span')
+    title_text = span_element.text
+
+    review_p = element.find_element(By.TAG_NAME, 'p')
+    review_span = review_p.find_element(By.XPATH, './/span')
+    review_text = review_span.text
+
+    sentiment = find_reviews_sentiment(review_text) # uses Cohere NLP
+
+    rating = 3.0
+    if sentiment == "positive":
+        rating = 5.0
+    elif sentiment == "negative":
+        rating = 1.0
+
+    print(title_text)
+
+    return Review(title=title_text, link=scraper.browser.current_url, sentiment= sentiment, rating=rating)
+    
 # Above is UNFINISHED
 
 def scrape_toms_guide(scraper, product_name) -> ArticleReview:
@@ -350,6 +381,8 @@ def scrape_toms_guide(scraper, product_name) -> ArticleReview:
         if ratio > highest_ratio:
             closest_element = element
             highest_ratio = ratio
+    if highest_ratio < 20:
+        return None
     closest_element.click()
 
     star_parent_class = "chunk"
@@ -365,6 +398,8 @@ def scrape_toms_guide(scraper, product_name) -> ArticleReview:
     article_hyperlink = browser.current_url
     
     return ArticleReview(rating=rating, link=article_hyperlink, site='toms-guide')
+
+
 
 def scrape_youtube(scraper, product_name):
     browser = scraper.browser
@@ -384,15 +419,18 @@ def scrape_youtube(scraper, product_name):
 
     for element in elements:
         browser.execute_script("arguments[0].scrollIntoView();", element)
-        scraper.wait(By.ID, "video-title")
-        title_wrap_element = element.find_element(By.ID, "video-title")
-        title_element = title_wrap_element.find_element(By.TAG_NAME, "yt-formatted-string")
-        title_text = title_element.text
-        if "review" not in title_text.lower():
-            continue
-        print(title_element)
-        ratio = fuzz.ratio(product_name, title_text)
-        tuples.append((ratio, element))
+        try:
+            scraper.wait(By.ID, "video-title")
+            title_wrap_element = element.find_element(By.ID, "video-title")
+            title_element = title_wrap_element.find_element(By.TAG_NAME, "yt-formatted-string")
+            title_text = title_element.text
+            if "review" not in title_text.lower():
+                continue
+            print(title_element)
+            ratio = fuzz.ratio(product_name, title_text)
+            tuples.append((ratio, element))
+        except:
+            pass
 
     sorted_tuples = sorted(tuples, key=lambda tup: tup[0], reverse=True)
         
