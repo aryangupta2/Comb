@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
 from scraper import Scraper
-from scrape_functions import scrape_amazon, scrape_toms_guide, scrape_youtube, Review, StoreReview, ArticleReview, VideoReview
+from scrape_functions import *
 import threading
 from fastapi.middleware.cors import CORSMiddleware
 import concurrent.futures
@@ -47,7 +47,7 @@ class Product(BaseModel):
 @app.get('/ratings/')
 def get(product_name: str):
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        scrape_functions = [scrape_amazon, scrape_toms_guide, scrape_youtube]
+        scrape_functions = [scrape_amazon, scrape_toms_guide, scrape_youtube, scrape_trusted_reviews]
         thread_results = [executor.submit(function, Scraper(), product_name) for function in scrape_functions]
 
         results = []
