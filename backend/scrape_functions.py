@@ -282,6 +282,7 @@ def scrape_youtube(scraper, product_name):
 
     for element in elements:
         browser.execute_script("arguments[0].scrollIntoView();", element)
+        scraper.wait(By.ID, "video-title")
         title_wrap_element = element.find_element(By.ID, "video-title")
         title_element = title_wrap_element.find_element(By.TAG_NAME, "yt-formatted-string")
         title_text = title_element.text
