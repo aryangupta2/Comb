@@ -34,6 +34,8 @@ class CompleteResponse(BaseModel):
     stores: List[StoreReview]
     articles: List[ArticleReview]
     videos: List[VideoReview]
+    article_average: float
+    customer_average: float
 
 
 class Item(BaseModel):
@@ -46,7 +48,7 @@ class Product(BaseModel):
 
 @app.get('/test/')
 def get(product_name: str):
-    return scrape_walmart(Scraper(), product_name)
+    return scrape_bestbuy(Scraper(), product_name)
 
 @app.get('/ratings/')
 def get(product_name: str):
@@ -61,6 +63,8 @@ def get(product_name: str):
         store_reviews: List[StoreReview] = []
         article_reviews: List[ArticleReview] = []
         video_reviews: List[VideoReview] = []
+        article_sum = 0
+        customer_sum = 0
 
         for review in reviews:
             if review is None:
@@ -68,10 +72,16 @@ def get(product_name: str):
 
             if isinstance(review, StoreReview):
                 store_reviews.append(review)
+                customer_sum += review.rating
             elif isinstance(review, ArticleReview):
                 article_reviews.append(review)
+                article_sum += review.rating
+
             else:
                 video_reviews = review
+        
+        article_avg = article_sum/len(article_reviews)
+        customer_avg = customer_sum/len(store_reviews)
 
-        return CompleteResponse(stores= store_reviews, articles=article_reviews, videos=video_reviews)
+        return CompleteResponse(stores= store_reviews, articles=article_reviews, videos=video_reviews, article_average=article_avg, customer_average=customer_avg)
  
