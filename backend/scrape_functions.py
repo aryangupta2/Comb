@@ -482,11 +482,14 @@ def scrape_verge(scraper, product_name):
     closest_element = elements[0]
     highest_ratio = fuzz.ratio(product_name, slice_colon(closest_element.text))
     for element in elements:
-        ratio = fuzz.ratio(product_name, slice_colon(element.text))
+        text = slice_colon(element.text)
+        if not contains_review_str(text):
+            continue
+        ratio = fuzz.ratio(product_name, text)
         if ratio > highest_ratio:
             closest_element = element
             highest_ratio = ratio
-    if highest_ratio < 20:
+    if highest_ratio < 20 or not contains_review_str(closest_element.text):
         return None
     closest_element.click()
 
