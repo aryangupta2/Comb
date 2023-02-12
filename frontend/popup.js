@@ -126,7 +126,7 @@ function disableLoading() {
 }
 
 
-window.onload = async function main() {
+async function main() {
     enableLoading()
     const data = await getData();
     disableLoading()
