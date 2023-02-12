@@ -140,12 +140,12 @@ def scrape_amazon(scraper, product_name) -> StoreReview:
             review: Review = build_top_amazon_review(scraper, path)
             reviews.append(review)
         except:
-            pass
-        try:
-            review: Review = build_amazon_review(scraper, path)
-            reviews.append(review)
-        except:
-            pass
+            try:
+                review: Review = build_amazon_review(scraper, path)
+                reviews.append(review)
+            except:
+                pass
+        
     
     return StoreReview(reviews=reviews, rating=rating_float, site=store)
 
