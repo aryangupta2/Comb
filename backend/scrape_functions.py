@@ -5,6 +5,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
+import cohere
+from cohere.classify import Example
+from datasets import *
+
 class VideoReview(BaseModel):
     link: str
     thumbnail_url: str
@@ -24,7 +28,15 @@ class ArticleReview(BaseModel):
     site: str
     link: str
     rating: float
-   
+ 
+def find_reviews_sentiment(reviews):
+    co = cohere.Client('B9k2WYc1FhKhqhJQq4fNFUoVTeZ9pjZtVb6aDgOZ')
+    response = co.classify(
+        model='large',
+        inputs=reviews,
+        examples=sentiment_examples,
+    )
+    return response.classifications
 
 def build_top_amazon_review(scraper, XPATH) -> Review:
     review = scraper.browser.find_element(By.XPATH, XPATH)
