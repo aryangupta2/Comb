@@ -7,9 +7,6 @@ from decouple import config
 from selenium.webdriver.chrome.service import Service
 
 
-
- 
-
 class Scraper:
     def __init__(self):
         service = Service(config("CHROMEDRIVER_PATH"))

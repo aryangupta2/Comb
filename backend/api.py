@@ -48,12 +48,12 @@ class Product(BaseModel):
 
 @app.get('/test/')
 def get(product_name: str):
-    return scrape_amazon(Scraper(), product_name)
+    return scrape_walmart(Scraper(), product_name)
 
 @app.get('/ratings/')
 def get(product_name: str):
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        scrape_functions = [scrape_amazon, scrape_toms_guide, scrape_youtube]
+        scrape_functions = [scrape_amazon, scrape_toms_guide, scrape_youtube, scrape_bestbuy]
         thread_results = [executor.submit(function, Scraper(), product_name) for function in scrape_functions]
 
         reviews = []
