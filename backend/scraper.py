@@ -24,6 +24,7 @@ class Scraper:
         caps = DesiredCapabilities().CHROME
         caps["pageLoadStrategy"] = "none"
         self.browser = webdriver.Chrome(service=service, options=chrome_options)
+        self.browser.set_window_size(1920, 1080)
 
     def __del__(self):
         self.browser.quit() # clean up driver when we are cleaned up
