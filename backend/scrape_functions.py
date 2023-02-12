@@ -259,6 +259,7 @@ def scrollDownAllTheWay(driver, nb):
             break
 
         nb -= 1
+        print(nb)
     return True
 
 def scrape_bestbuy(scraper, product_name) -> StoreReview:
@@ -277,14 +278,18 @@ def scrape_bestbuy(scraper, product_name) -> StoreReview:
     scrollDownAllTheWay(browser, 1000)
     
     # Get all the products from the search and click on the one that matches the most with the product name
-    parent = browser.find_element(By.XPATH, parent_XPATH)
-    elements = parent.find_elements(By.XPATH, ".//*")
+    #parent = browser.find_element(By.XPATH, parent_XPATH)
+    elements = browser.find_elements(By.TAG_NAME, "a")
+    for element in elements:
+        print(element.get_attribute('innerHTML'))
+    elements = [element for element in elements if element.get_attribute('itemprop') is not None]
+    
     #"/html/body/div[1]/div[1]/div[3]/div/div[2]/div/div/div[8]/div[2]/div[2]/div[1]/div/div[1]"
     #"/html/body/div[1]/div[1]/div[3]/div/div[2]/div/div/div[8]/div[2]/div[2]/div[1]/div/div[1]/div[1]/div/a/div/div[2]/div[2]/span/div/p"
     closest_element = elements[0]
     highest_ratio = fuzz.ratio(product_name, closest_element.text)
     for element in elements:
-        text_element = element.find_element(By.TAG_NAME, "p")
+        text_element = element.find_element(By.TAG_NAME, "div")
         element_text = text_element.text
         print(element_text)
         ratio = fuzz.ratio(product_name, element_text)
@@ -365,7 +370,7 @@ def scrape_youtube(scraper, product_name):
     product_name += ' Review'
     browser.get("https://www.youtube.com/results?search_query=" + product_name)
 
-    scrollDownAllTheWay(browser, 20)
+    scrollDownAllTheWay(browser, 2)
 
     parent_xpath = "//*[@id=\"contents\"]"
     scraper.wait(By.XPATH, parent_xpath)
