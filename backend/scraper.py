@@ -27,7 +27,7 @@ class Scraper:
         self.browser.quit() # clean up driver when we are cleaned up
 
     def wait(self, method, selector):
-        WebDriverWait(self.browser, 2).until(
+        WebDriverWait(self.browser, 1).until(
             EC.presence_of_element_located((method, selector))
         )
 
