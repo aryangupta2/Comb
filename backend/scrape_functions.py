@@ -177,13 +177,76 @@ def scrape_walmart(scraper, product_name) -> StoreReview:
     browser.get("https://www.walmart.ca/search?q=" + product_name)
     # Search for the product
     parent_ID = "product-results"
-    print(browser.page_source)
+    #print(browser.page_source)
     WebDriverWait(browser, 1)
+    print(browser.find_elements(By.XPATH, ".//*"))
     scraper.wait(By.ID, parent_ID)
     
     
     # Get all the products from the search and click on the one that matches the most with the product name
     parent = browser.find_element(By.ID, parent_ID)
+    elements = parent.find_elements(By.XPATH, ".//*")
+    #"/html/body/div[1]/div[1]/div[3]/div/div[2]/div/div/div[8]/div[2]/div[2]/div[1]/div/div[1]"
+    #"/html/body/div[1]/div[1]/div[3]/div/div[2]/div/div/div[8]/div[2]/div[2]/div[1]/div/div[1]/div[1]/div/a/div/div[2]/div[2]/span/div/p"
+    closest_element = elements[0]
+    highest_ratio = fuzz.ratio(product_name, closest_element.text)
+    for element in elements:
+        text_element = element.find_element(By.TAG_NAME, "p")
+        element_text = text_element.text
+        print(element_text)
+        ratio = fuzz.ratio(product_name, element_text)
+        if ratio > highest_ratio:
+            closest_element = element
+            highest_ratio = ratio
+    closest_element.click()
+    
+    rating_xpath = "//*[@id=\"reviewsMedley\"]/div/div[1]/span[1]/span/div[2]/div/div[2]/div/span/span"
+    scraper.wait(By.XPATH, rating_xpath)
+
+    # Find the rating for the product
+    rating = browser.find_element(By.XPATH, rating_xpath)
+    rating_text = rating.text
+    rating_float = float(rating_text[:3])
+
+    # Go the the customer review page
+    all_reviews_xpath = "//*[@id=\"cr-pagination-footer-0\"]/a"
+    all_reviews_css_selector = "a[data-hook='see-all-reviews-link-foot']"
+    
+    scraper.wait(By.CSS_SELECTOR, all_reviews_css_selector)
+
+    see_all_reviews = browser.find_element(By.CSS_SELECTOR, all_reviews_css_selector)
+    see_all_reviews.click()
+
+    # Select the best positive and critical reviews
+    pos_review_xpath = "/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[1]/div/div/div[1]/div[1]"
+    general_review_xpath = "/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[5]/div[3]/div/div[1]/div/div/div[2]"
+    WebDriverWait(browser, 10).until(lambda driver: driver.find_elements(By.XPATH, pos_review_xpath) or
+                                               driver.find_elements(By.XPATH, general_review_xpath))[0]
+
+    if len(browser.find_elements(By.XPATH, pos_review_xpath)) > 0:
+        positive_review: Review = build_top_amazon_review(scraper, pos_review_xpath)
+        critical_review: Review = build_top_amazon_review(scraper, "/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[1]/div/div/div[2]/div[1]")
+        return StoreReview(reviews=[positive_review, critical_review], rating=rating_float, site=store)
+    else:
+        review_1: Review = build_amazon_review(scraper, general_review_xpath)
+        review_2: Review = build_amazon_review(scraper, "/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[5]/div[3]/div/div[2]/div/div/div[2]")
+        return StoreReview(reviews=[review_1, review_2], rating=rating_float, site=store)
+# Above is UNFINISHED
+
+def scrape_bestbuy(scraper, product_name) -> StoreReview:
+    browser = scraper.browser
+    store = "bestbuy"
+
+    
+
+    browser.get("https://www.bestbuy.ca/en-ca/search?search=" + product_name)
+    parent_XPATH = "/html/body/div[1]/div/div[2]/div[1]/div/main/div[1]/div[3]/div/div/ul/div"
+    WebDriverWait(browser, 1)
+    scraper.wait(By.XPATH, parent_XPATH)
+    
+    
+    # Get all the products from the search and click on the one that matches the most with the product name
+    parent = browser.find_element(By.XPATH, parent_XPATH)
     elements = parent.find_elements(By.XPATH, ".//*")
     #"/html/body/div[1]/div[1]/div[3]/div/div[2]/div/div/div[8]/div[2]/div[2]/div[1]/div/div[1]"
     #"/html/body/div[1]/div[1]/div[3]/div/div[2]/div/div/div[8]/div[2]/div[2]/div[1]/div/div[1]/div[1]/div/a/div/div[2]/div[2]/span/div/p"
