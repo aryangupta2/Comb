@@ -124,10 +124,11 @@ def scrape_amazon(scraper, product_name) -> StoreReview:
 
     see_all_reviews = browser.find_element(By.CSS_SELECTOR, all_reviews_css_selector)
     see_all_reviews.click()
-    paths = ["/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[1]/div/div/div[1]/div[1]",
-    "/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[5]/div[3]/div/div[1]/div/div/div[2]",
-    "/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[1]/div/div/div[2]/div[3]",
-    "/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[5]/div[3]/div/div[2]/div/div/div[4]",]
+    paths = [   "/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[1]/div/div/div[1]/div[1]",
+                "/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[1]/div/div/div[2]/div[1]",
+                "/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[5]/div[3]/div/div[3]/div/div/div[2]"
+                "/html/body/div[1]/div[3]/div/div[1]/div/div[1]/div[5]/div[3]/div/div[4]/div/div/div[2]"
+                ]
     
     # Select the best positive and critical reviews
     reviews = []
