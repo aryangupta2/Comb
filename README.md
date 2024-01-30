@@ -1,6 +1,9 @@
 # Comb
 uOttaHack project
 
+![Macbook Pro - Dark BackgroundComb Demo Thumbail](https://github.com/aryangupta2/Comb/assets/74326240/7100285b-387a-4205-bf7f-8cdf7d0140a1)
+
+
 To run the server locally, you need to follow these steps:
 1. Install a chrome driver that matches your version of chrome from https://chromedriver.chromium.org/downloads.
 
